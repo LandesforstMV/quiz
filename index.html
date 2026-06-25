@@ -104,10 +104,11 @@
             margin: 15px 0;
         }
 
+        /* Desktop: größer, Mobile: kleiner */
         .edda-img {
-            width: 70px;
+            width: 220px;
             height: auto;
-            max-height: 220px;
+            max-height: 280px;
             object-fit: contain;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
         }
@@ -512,14 +513,44 @@
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
+        /* ==================== MOBILE OPTIMIERUNGEN ==================== */
         @media (max-width: 600px) {
-            .header h1 { font-size: 1.6rem; }
-            .edda-img { width: 140px; }
-            .question-card { padding: 20px; }
-            .question-text { font-size: 1rem; }
-            .option { padding: 12px 14px; }
+            .container { padding: 10px; }
+
+            .header { padding: 10px 10px 15px; }
+            .header h1 { font-size: 1.4rem; }
+            .header .subtitle { font-size: 0.9rem; }
+            .header .target-group { font-size: 0.7rem; padding: 4px 12px; }
+
+            /* Edda kleiner auf Mobile */
+            .edda-img { width: 90px; max-height: 110px; }
+            .edda-container { margin: 8px 0; }
+
+            .progress-container { margin: 10px 0; height: 6px; }
+            .progress-text { font-size: 0.75rem; margin: 3px 0 8px 0; }
+
+            /* Frage-Karte kompakter */
+            .question-card { padding: 16px; border-radius: 12px; }
+            .question-number { width: 28px; height: 28px; font-size: 0.85rem; margin-bottom: 10px; }
+            .question-text { font-size: 0.95rem; margin-bottom: 12px; }
+
+            /* Optionen kompakter */
+            .options { gap: 6px; }
+            .option { padding: 10px 12px; border-radius: 10px; }
+            .option-text { font-size: 0.85rem; }
+            .radio-circle { width: 18px; height: 18px; margin-right: 10px; }
+
+            .explanation { padding: 10px 12px; font-size: 0.8rem; margin-top: 10px; }
+
+            .btn { padding: 10px 24px; font-size: 0.9rem; }
+
+            .result-card { padding: 24px 20px; }
+            .result-title { font-size: 1.5rem; }
             .result-score { font-size: 2.5rem; }
-            .result-edda { width: 140px; }
+            .result-edda { width: 120px; }
+            .result-message { font-size: 0.95rem; }
+
+            .footer { padding: 20px 10px; font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -528,13 +559,12 @@
         <header class="header">
             <div class="logo-area">
                 <div class="edda-container">
-                <img class="edda-img" src="https://www.wald-mv.de/static/WALDMV/Dateien/Bilder/Waldwissen/Waldp%C3%A4dagogik/eichhoernchen_edda%20_mehrfarbig_rgb.png" alt="Edda - das Eichhörnchen" onerror="this.style.display='none'">
-            </div>
-                                <h1>Quiz für schlaue WALDIS</h1>
+                    <img class="edda-img" src="https://www.wald-mv.de/static/WALDMV/Dateien/Bilder/Waldwissen/Waldp%C3%A4dagogik/eichhoernchen_edda%20_mehrfarbig_rgb.png" alt="Edda - das Eichhörnchen" onerror="this.style.display='none'">
+                </div>
+                <h1>Quiz für schlaue WALDIS</h1>
             </div>
             <p class="subtitle">Wie gut kennst du dich im Wald aus?</p>
             <span class="target-group">ab Klasse 7</span>
-
         </header>
 
         <div class="progress-container">
@@ -825,7 +855,7 @@
 
         <footer class="footer">
             <img src="https://www.wald-mv.de/static/WALDMV/Dateien/Bilder/logo-landesforst-mv-.svg" alt="Logo" width="180">
-                     <p style="margin-top: 15px;">
+            <p style="margin-top: 15px;">
                 <a href="https://www.wald-mv.de" target="_blank">www.wald-mv.de</a>
             </p>
         </footer>
