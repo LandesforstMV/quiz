@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz für schlaue WALDIS – Landesforst MV</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --forstgruen: #2D6A4F;
+            --forstgruen-dunkel: #1B4332;
+            --forstgruen-hell: #40916C;
+            --waldgruen: #2E6F40;
+            --hellgruen: #95D5B2;
+            --eisblau: #E5ECEE;
+            --wasserblau: #004659;
+            --himmelblau: #336B7A;
+            --sand: #F5F0E8;
+            --creme: #FAFAF5;
+            --dunkel: #1A1A1A;
+            --grau: #666666;
+            --hellgrau: #E8E8E8;
+            --korrekt: #2D6A4F;
+            --falsch: #C0392B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, var(--creme) 0%, var(--sand) 100%);
+            min-height: 100vh;
+            color: var(--dunkel);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 0px 20px 20px;
+        }
+
+        .header::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--forstgruen);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .tree-icon {
+            width: 40px;
+            height: 40px;
+            fill: var(--forstgruen);
+        }
+
+        .header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            color: var(--forstgruen-dunkel);
+            line-height: 1.2;
+        }
+
+        .header .subtitle {
+            font-size: 1.05rem;
+            color: var(--grau);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .header .target-group {
+            display: inline-block;
+            background: var(--forstgruen);
+            color: white;
+            padding: 5px 18px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .edda-container {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .edda-img {
+            width: 130px;
+            height: auto;
+            max-height: 220px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .progress-container {
+            background: var(--hellgrau);
+            height: 8px;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--forstgruen), var(--hellgruen));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--grau);
+            margin: 5px 0 15px 0;
+        }
+
+        /* Frage-Container: feste Position, keine Scroll-Bewegung */
+        .question-wrapper {
+            position: relative;
+            min-height: 400px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-left: 5px solid var(--forstgruen);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            opacity: 0;
+            transform: translateX(50px);
+            pointer-events: none;
+        }
+
+        .question-card.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            position: relative;
+        }
+
+        .question-card.answered {
+            opacity: 0;
+            transform: translateX(-50px);
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--forstgruen);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.12rem;
+            font-weight: 700;
+            color: var(--dunkel);
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            background: var(--creme);
+            border: 2px solid var(--hellgrau);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option:hover {
+            border-color: var(--forstgruen-hell);
+            background: rgba(45, 106, 79, 0.05);
+            transform: translateX(4px);
+        }
+
+        .option.selected {
+            border-color: var(--forstgruen);
+            background: rgba(45, 106, 79, 0.08);
+        }
+
+        .option.correct {
+            border-color: var(--korrekt);
+            background: rgba(45, 106, 79, 0.1);
+        }
+
+        .option.correct::after {
+            content: '✓';
+            position: absolute;
+            right: 18px;
+            color: var(--korrekt);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .option.wrong {
+            border-color: var(--falsch);
+            background: rgba(192, 57, 43, 0.05);
+        }
+
+        .option.wrong::after {
+            content: '✗';
+            position: absolute;
+            right: 18px;
+            color: var(--falsch);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .radio-circle {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--grau);
+            border-radius: 50%;
+            margin-right: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .option:hover .radio-circle {
+            border-color: var(--forstgruen);
+        }
+
+        .option.selected .radio-circle {
+            border-color: var(--forstgruen);
+            background: var(--forstgruen);
+        }
+
+        .option.selected .radio-circle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .option.correct .radio-circle {
+            border-color: var(--korrekt);
+            background: var(--korrekt);
+        }
+
+        .option.correct .radio-circle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .option.wrong .radio-circle {
+            border-color: var(--falsch);
+            background: var(--falsch);
+        }
+
+        .option.wrong .radio-circle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .option-text {
+            font-size: 0.95rem;
+            color: var(--dunkel);
+            line-height: 1.4;
+            padding-right: 30px;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px 18px;
+            background: linear-gradient(135deg, rgba(45, 106, 79, 0.08), rgba(149, 213, 178, 0.15));
+            border-radius: 10px;
+            border-left: 4px solid var(--forstgruen);
+            font-size: 0.9rem;
+            color: var(--forstgruen-dunkel);
+            line-height: 1.6;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 500px; }
+        }
+
+        .next-btn-container {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .next-btn-container.show {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--forstgruen);
+            color: white;
+            box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--forstgruen-dunkel);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(45, 106, 79, 0.4);
+        }
+
+        /* Ergebnis */
+        .result-section {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--forstgruen), var(--hellgruen), var(--eisblau));
+        }
+
+        .result-edda {
+            width: 180px;
+            height: auto;
+            margin: 0 auto 15px;
+            animation: eddaCelebrate 1s ease-in-out infinite;
+        }
+
+        @keyframes eddaCelebrate {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            25% { transform: translateY(-15px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(-3deg); }
+            75% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        .result-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            color: var(--forstgruen-dunkel);
+            margin-bottom: 10px;
+        }
+
+        .result-score {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--forstgruen);
+            margin: 15px 0;
+        }
+
+        .result-score span {
+            font-size: 1.5rem;
+            color: var(--grau);
+            font-weight: 400;
+        }
+
+        .result-message {
+            font-size: 1.1rem;
+            color: var(--grau);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .result-bar-container {
+            background: var(--hellgrau);
+            height: 12px;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .result-bar {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+            background: linear-gradient(90deg, var(--forstgruen), var(--hellgruen));
+        }
+
+        .stars {
+            font-size: 2rem;
+            margin: 15px 0;
+            letter-spacing: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--grau);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--forstgruen);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confettiFall linear forwards;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.6rem; }
+            .edda-img { width: 140px; }
+            .question-card { padding: 20px; }
+            .question-text { font-size: 1rem; }
+            .option { padding: 12px 14px; }
+            .result-score { font-size: 2.5rem; }
+            .result-edda { width: 140px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-area">
+                                <h1>Quiz für schlaue WALDIS</h1>
+            </div>
+            <p class="subtitle">Wie gut kennst du dich im Wald aus?</p>
+            <span class="target-group">ab Klasse 7</span>
+
+            <div class="edda-container">
+                <img class="edda-img" src="https://www.wald-mv.de/static/WALDMV/Dateien/Bilder/Waldwissen/Waldp%C3%A4dagogik/eichhoernchen_edda%20_mehrfarbig_rgb.png" alt="Edda - das Eichhörnchen" onerror="this.style.display='none'">
+            </div>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p class="progress-text" id="progressText">Frage 1 von 10</p>
+
+        <!-- FRAGEN - alle absolut positioniert im Wrapper -->
+        <div class="question-wrapper" id="quizContainer">
+            <!-- Frage 1 -->
+            <div class="question-card active" id="q0">
+                <div class="question-number">1</div>
+                <div class="question-text">Was bedeutet forstliche Nachhaltigkeit?</div>
+                <div class="options">
+                    <div class="option" data-q="0" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Bodenverbesserung</span>
+                    </div>
+                    <div class="option" data-q="0" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Wachstum</span>
+                    </div>
+                    <div class="option" data-q="0" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">vorausschauendes Denken und Handeln</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp0">
+                    <strong>💡 Erklärung:</strong> Forstliche Nachhaltigkeit bedeutet, den Wald so zu bewirtschaften, dass er für kommende Generationen erhalten bleibt. Das erfordert vorausschauendes Denken und Handeln.
+                </div>
+                <div class="next-btn-container" id="next0">
+                    <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Frage 2 -->
+            <div class="question-card" id="q1">
+                <div class="question-number">2</div>
+                <div class="question-text">Mit welcher Maschine wird Holz im Bestand gefällt?</div>
+                <div class="options">
+                    <div class="option" data-q="1" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Traktor</span>
+                    </div>
+                    <div class="option" data-q="1" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Forwarder</span>
+                    </div>
+                    <div class="option" data-q="1" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Harvester</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp1">
+                    <strong>💡 Erklärung:</strong> Der Harvester ist eine spezielle Forstmaschine, die Bäume fällt, entastet und auf die gewünschte Länge schneidet – alles in einem Arbeitsgang.
+                </div>
+                <div class="next-btn-container" id="next1">
+                    <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Frage 3 -->
+            <div class="question-card" id="q2">
+                <div class="question-number">3</div>
+                <div class="question-text">Was ist im Wald ein sogenannter Reinbestand?</div>
+                <div class="options">
+                    <div class="option" data-q="2" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">eine Fläche mit nur einer Baumart</span>
+                    </div>
+                    <div class="option" data-q="2" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">ein Bestand ohne Unkräuter</span>
+                    </div>
+                    <div class="option" data-q="2" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">die Bäume stehen alle geraden in einer Reihe</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp2">
+                    <strong>💡 Erklärung:</strong> Ein Reinbestand besteht aus nur einer Baumart, z. B. ein reiner Buchen- oder Fichtenbestand. Im Gegensatz dazu steht der Mischbestand mit mehreren Baumarten.
+                </div>
+                <div class="next-btn-container" id="next2">
+                    <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Frage 4 -->
+            <div class="question-card" id="q3">
+                <div class="question-number">4</div>
+                <div class="question-text">Wer war früher im Wald beschäftigt?</div>
+                <div class="options">
+                    <div class="option" data-q="3" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Schwarzwälder</span>
+                    </div>
+                    <div class="option" data-q="3" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Thüringer</span>
+                    </div>
+                    <div class="option" data-q="3" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Harzer</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp3">
+                    <strong>💡 Erklärung:</strong> Die Harzer waren traditionell im Harz als Holzfäller, Köhler und Bergleute tätig. Der Harz ist ein bekanntes Mittelgebirge mit langer Forsttradition.
+                </div>
+                <div class="next-btn-container" id="next3">
+                    <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Frage 5 -->
+            <div class="question-card" id="q4">
+                <div class="question-number">5</div>
+                <div class="question-text">Wie hoch ist der Waldanteil in M-V?</div>
+                <div class="options">
+                    <div class="option" data-q="4" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">etwa die Hälfte (50%) der gesamten Landesfläche</span>
+                    </div>
+                    <div class="option" data-q="4" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">weniger als ein Viertel (25%) der Fläche ist mit Wald bestockt</span>
+                    </div>
+                    <div class="option" data-q="4" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">auf 2/3 der Landesfläche wächst Wald (66%)</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp4">
+                    <strong>💡 Erklärung:</strong> In Mecklenburg-Vorpommern sind weniger als 25% der Landesfläche bewaldet. Das ist deutlich weniger als in vielen anderen Bundesländern.
+                </div>
+                <div class="next-btn-container" id="next4">
+                    <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Frage 6 -->
+            <div class="question-card" id="q5">
+                <div class="question-number">6</div>
+                <div class="question-text">Was verstehen Forstleute unter einem "Chinesenbart"?</div>
+                <div class="options">
+                    <div class="option" data-q="5" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">bärtiger, chinesischer Koch beim Feuer Cooking im Wald</span>
+                    </div>
+                    <div class="option" data-q="5" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Überwallung eines alten Astes bei der Buche (Astnarbe)</span>
+                    </div>
+                    <div class="option" data-q="5" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">gefiedert, herabhängende Blätter des chinesischen Drachenbaumes</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp5">
+                    <strong>💡 Erklärung:</strong> Der "Chinesenbart" ist ein forstlicher Fachbegriff für die charakteristische Überwallung (Einkapselung) eines alten Astes bei der Buche.
+                </div>
+                <div class="next-btn-container" id="next5">
+                    <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Frage 7 -->
+            <div class="question-card" id="q6">
+                <div class="question-number">7</div>
+                <div class="question-text">Auf der Fläche von einem Hektar werden ca. 7000 Buchen gepflanzt. Nach 120 Jahren stehen noch etwa 250 Stück. Warum machen die Forstleute das?</div>
+                <div class="options">
+                    <div class="option" data-q="6" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">wegen des Waldsterbens müssen viele Bäume gepflanzt werden</span>
+                    </div>
+                    <div class="option" data-q="6" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">das Wild soll auch in Notzeiten genug Äsung finden</span>
+                    </div>
+                    <div class="option" data-q="6" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">der Dichtstand sorgt für schlanken und feinastigen Wuchs</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp6">
+                    <strong>💡 Erklärung:</strong> Durch den hohen Anfangsbestand (Dichtstand) konkurrieren die Bäume um Licht und wachsen schlank und feinastig – das ergibt hochwertiges Buchenholz.
+                </div>
+                <div class="next-btn-container" id="next6">
+                    <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Frage 8 -->
+            <div class="question-card" id="q7">
+                <div class="question-number">8</div>
+                <div class="question-text">Was verstehen Forstfachleute unter "Dauerwald"?</div>
+                <div class="options">
+                    <div class="option" data-q="7" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">es dauert lange bis der Wald wächst und Holz erntefähig ist</span>
+                    </div>
+                    <div class="option" data-q="7" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">eine Waldbewirtschaftungsform mit einzelstammweiser Nutzung</span>
+                    </div>
+                    <div class="option" data-q="7" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">ein Bestand, der andauernd und intensiv gepflegt werden muss</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp7">
+                    <strong>💡 Erklärung:</strong> Dauerwald ist eine nachhaltige Bewirtschaftungsform, bei der einzelne Bäume selektiv genutzt werden, während der Bestand als Ganzes erhalten bleibt.
+                </div>
+                <div class="next-btn-container" id="next7">
+                    <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Frage 9 -->
+            <div class="question-card" id="q8">
+                <div class="question-number">9</div>
+                <div class="question-text">Schätze die Holzmenge, die in M-V jährlich eingeschlagen wird.</div>
+                <div class="options">
+                    <div class="option" data-q="8" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">900.000 Erntefestmeter (= 36.000 LKW-Ladungen: alle hintereinander macht eine Strecke von 648 km = Luftlinie Mühlengeez bis München)</span>
+                    </div>
+                    <div class="option" data-q="8" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">200.000 EFM (8.000 LKW-Ladungen = 144 km = Schwerin bis Anklam)</span>
+                    </div>
+                    <div class="option" data-q="8" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">1,8 Mio Efm (72.000 LKW-Ladungen = 1296 km = Usedom bis Rom, Italien)</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp8">
+                    <strong>💡 Erklärung:</strong> In Mecklenburg-Vorpommern werden jährlich ca. 900.000 Erntefestmeter Holz eingeschlagen – das entspricht einer beeindruckenden LKW-Kolonne von Mühlengeez bis München!
+                </div>
+                <div class="next-btn-container" id="next8">
+                    <button class="btn btn-primary" onclick="nextQuestion()">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Frage 10 -->
+            <div class="question-card" id="q9">
+                <div class="question-number">10</div>
+                <div class="question-text">Ordne die Pflegemaßnahmen entsprechend des Durchführungszeitpunktes.</div>
+                <div class="options">
+                    <div class="option" data-q="9" data-o="0">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Pflanzung, Kulturpflege, Jungwuchspflege, Läuterung, Durchforstung, Ernte</span>
+                    </div>
+                    <div class="option" data-q="9" data-o="1">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Pflanzung, Durchforstung, Kulturpflege, Läuterung, Jungwuchspflege, Ernte</span>
+                    </div>
+                    <div class="option" data-q="9" data-o="2">
+                        <div class="radio-circle"></div>
+                        <span class="option-text">Pflanzung, Jungwuchspflege, Kulturpflege, Läuterung, Durchforstung, Ernte</span>
+                    </div>
+                </div>
+                <div class="explanation" id="exp9">
+                    <strong>💡 Erklärung:</strong> Die richtige Reihenfolge ist: Pflanzung → Kulturpflege (Schutz der jungen Pflanzen) → Jungwuchspflege → Läuterung (Entfernen minderwertiger Bäume) → Durchforstung → Ernte.
+                </div>
+                <div class="next-btn-container" id="next9">
+                    <button class="btn btn-primary" onclick="showResult()">Zur Auswertung →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ergebnis -->
+        <div class="result-section" id="resultSection">
+            <div class="result-card">
+                <img class="result-edda" src="https://www.wald-mv.de/static/WALDMV/Dateien/Bilder/Waldwissen/Waldp%C3%A4dagogik/eichhoernchen_edda%20_mehrfarbig_rgb.png" alt="Edda" onerror="this.style.display='none'">
+
+                <h2 class="result-title" id="resultTitle">Auswertung</h2>
+                <div class="stars" id="resultStars"></div>
+                <div class="result-score" id="resultScore">0<span>/10</span></div>
+                <div class="result-bar-container">
+                    <div class="result-bar" id="resultBar"></div>
+                </div>
+                <p class="result-message" id="resultMessage"></p>
+                <div style="margin-top: 25px;">
+                    <button class="btn btn-primary" onclick="restartQuiz()">🔄 Quiz wiederholen</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <img src="https://www.wald-mv.de/static/WALDMV/Dateien/Bilder/logo-landesforst-mv-.svg" alt="Logo" width="180">
+                     <p style="margin-top: 15px;">
+                <a href="https://www.wald-mv.de" target="_blank">www.wald-mv.de</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Event Delegation
+        document.addEventListener('click', function(e) {
+            var option = e.target.closest('.option');
+            if (!option) return;
+
+            var q = parseInt(option.getAttribute('data-q'));
+            var o = parseInt(option.getAttribute('data-o'));
+
+            if (isNaN(q) || isNaN(o)) return;
+
+            selectAnswer(q, o);
+        });
+
+        var correctAnswers = [2, 2, 0, 2, 1, 1, 2, 1, 0, 0];
+        var score = 0;
+        var answered = [false, false, false, false, false, false, false, false, false, false];
+        var userAnswers = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+        var currentQuestion = 0;
+
+        function selectAnswer(questionIndex, optionIndex) {
+            if (answered[questionIndex]) return;
+
+            userAnswers[questionIndex] = optionIndex;
+            answered[questionIndex] = true;
+
+            if (optionIndex === correctAnswers[questionIndex]) {
+                score++;
+            }
+
+            // Update UI
+            var card = document.getElementById('q' + questionIndex);
+            var options = card.querySelectorAll('.option');
+
+            for (var i = 0; i < options.length; i++) {
+                var opt = options[i];
+                opt.classList.add('disabled');
+
+                var optIdx = parseInt(opt.getAttribute('data-o'));
+
+                if (optIdx === optionIndex) {
+                    opt.classList.add('selected');
+                    if (optIdx === correctAnswers[questionIndex]) {
+                        opt.classList.add('correct');
+                    } else {
+                        opt.classList.add('wrong');
+                    }
+                }
+                if (optIdx === correctAnswers[questionIndex] && optIdx !== optionIndex) {
+                    opt.classList.add('correct');
+                }
+            }
+
+            // Show explanation
+            document.getElementById('exp' + questionIndex).classList.add('show');
+
+            // Show next button
+            document.getElementById('next' + questionIndex).classList.add('show');
+
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            // Hide current
+            var currentCard = document.getElementById('q' + currentQuestion);
+            currentCard.classList.remove('active');
+            currentCard.classList.add('answered');
+
+            currentQuestion++;
+
+            // Show next
+            if (currentQuestion < 10) {
+                var nextCard = document.getElementById('q' + currentQuestion);
+                nextCard.classList.remove('answered');
+                nextCard.classList.add('active');
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            var answeredCount = 0;
+            for (var i = 0; i < answered.length; i++) {
+                if (answered[i]) answeredCount++;
+            }
+
+            var percent = (answeredCount / 10) * 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressText').textContent = 
+                answeredCount === 10 
+                    ? 'Alle Fragen beantwortet!' 
+                    : 'Frage ' + (currentQuestion + 1) + ' von 10';
+        }
+
+        function showResult() {
+            document.getElementById('quizContainer').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+            document.getElementById('progressText').style.display = 'none';
+            document.querySelector('.header').style.display = 'none';
+
+            var resultSection = document.getElementById('resultSection');
+            resultSection.classList.add('show');
+
+            var percent = (score / 10) * 100;
+            document.getElementById('resultScore').innerHTML = score + '<span>/10</span>';
+            document.getElementById('resultBar').style.width = percent + '%';
+
+            var stars = '';
+            var fullStars = Math.floor(score / 2);
+            for (var i = 0; i < 5; i++) {
+                stars += i < fullStars ? '⭐' : '☆';
+            }
+            document.getElementById('resultStars').textContent = stars;
+
+            var title, message;
+            if (score === 10) {
+                title = 'Wahnsinn! Perfekt!';
+                message = 'Du bist ein echter WALDI-Experte! Alle 10 Punkte – das ist beeindruckend! Edda ist stolz auf dich!';
+                createConfetti();
+            } else if (score >= 8) {
+                title = 'Hervorragend!';
+                message = 'Du kennst dich wirklich gut im Wald aus. Fast perfekt! Edda klatscht Beifall!';
+                createConfetti();
+            } else if (score >= 6) {
+                title = 'Gut gemacht!';
+                message = 'Solides Wissen über den Wald. Mit etwas Übung wirst du noch besser! Edda drückt dir die Daumen!';
+            } else if (score >= 4) {
+                title = 'Nicht schlecht!';
+                message = 'Du hast schon einiges gelernt. Schau dir die Erklärungen nochmal an! Edda hilft dir gerne weiter!';
+            } else {
+                title = 'Weiter so!';
+                message = 'Jeder fängt mal an. Die Erklärungen helfen dir beim nächsten Mal! Edda begleitet dich!';
+            }
+
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultMessage').textContent = message;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function createConfetti() {
+            var colors = ['#2D6A4F', '#40916C', '#95D5B2', '#D4A017', '#004659', '#336B7A', '#B85C1A', '#F5E6D3'];
+            for (var i = 0; i < 60; i++) {
+                setTimeout(function(idx) {
+                    return function() {
+                        var confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + 'vw';
+                        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                        confetti.style.width = (Math.random() * 8 + 6) + 'px';
+                        confetti.style.height = (Math.random() * 8 + 6) + 'px';
+                        document.body.appendChild(confetti);
+                        setTimeout(function() { confetti.remove(); }, 4000);
+                    };
+                }(i), i * 40);
+            }
+        }
+
+        function restartQuiz() {
+            score = 0;
+            currentQuestion = 0;
+            for (var i = 0; i < 10; i++) {
+                answered[i] = false;
+                userAnswers[i] = -1;
+            }
+
+            // Reset all cards
+            for (var j = 0; j < 10; j++) {
+                var card = document.getElementById('q' + j);
+                card.classList.remove('active', 'answered');
+
+                var options = card.querySelectorAll('.option');
+                for (var k = 0; k < options.length; k++) {
+                    var opt = options[k];
+                    opt.classList.remove('selected', 'correct', 'wrong', 'disabled');
+                }
+                document.getElementById('exp' + j).classList.remove('show');
+                document.getElementById('next' + j).classList.remove('show');
+            }
+
+            // Show first question
+            document.getElementById('q0').classList.add('active');
+
+            document.getElementById('quizContainer').style.display = 'block';
+            document.querySelector('.progress-container').style.display = 'block';
+            document.getElementById('progressText').style.display = 'block';
+            document.querySelector('.header').style.display = 'block';
+            document.getElementById('resultSection').classList.remove('show');
+
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
