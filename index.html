@@ -41,21 +41,26 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
+        /* ===== KOMPAKTER HEADER ===== */
         .header {
             text-align: center;
-            padding: 0px 20px 20px;
+            padding: 0 0 8px 0;
+            flex-shrink: 0;
         }
 
         .header::after {
             content: '';
             display: block;
-            width: 80px;
-            height: 4px;
+            width: 60px;
+            height: 3px;
             background: var(--forstgruen);
-            margin: 15px auto 0;
+            margin: 8px auto 0;
             border-radius: 2px;
         }
 
@@ -63,27 +68,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: 8px;
+            margin-bottom: 4px;
         }
 
         .tree-icon {
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             fill: var(--forstgruen);
         }
 
         .header h1 {
             font-family: 'DM Serif Display', serif;
-            font-size: 2.2rem;
+            font-size: 1.6rem;
             color: var(--forstgruen-dunkel);
             line-height: 1.2;
         }
 
         .header .subtitle {
-            font-size: 1.05rem;
+            font-size: 0.9rem;
             color: var(--grau);
-            margin-top: 6px;
+            margin-top: 2px;
             font-weight: 500;
         }
 
@@ -91,62 +96,68 @@
             display: inline-block;
             background: var(--forstgruen);
             color: white;
-            padding: 5px 18px;
+            padding: 3px 12px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 700;
-            margin-top: 12px;
+            margin-top: 6px;
             letter-spacing: 0.5px;
         }
 
+        /* Edda kleiner */
         .edda-container {
             text-align: center;
-            margin: 15px 0;
+            margin: 4px 0;
         }
 
-        /* Desktop: größer, Mobile: kleiner */
         .edda-img {
-            width: 220px;
+            width: 50px;
             height: auto;
-            max-height: 280px;
+            max-height: 60px;
             object-fit: contain;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
+        /* ===== PROGRESS ===== */
         .progress-container {
             background: var(--hellgrau);
-            height: 8px;
-            border-radius: 4px;
-            margin: 15px 0;
+            height: 6px;
+            border-radius: 3px;
+            margin: 6px 0;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .progress-bar {
             height: 100%;
             background: linear-gradient(90deg, var(--forstgruen), var(--hellgruen));
-            border-radius: 4px;
+            border-radius: 3px;
             transition: width 0.5s ease;
             width: 0%;
         }
 
         .progress-text {
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--grau);
-            margin: 5px 0 15px 0;
+            margin: 2px 0 6px 0;
+            flex-shrink: 0;
         }
 
-        /* Frage-Container: feste Position, keine Scroll-Bewegung */
+        /* ===== QUIZBOXEN - GRÖßERER FOKUS ===== */
         .question-wrapper {
             position: relative;
-            min-height: 400px;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         .question-card {
             background: white;
             border-radius: 16px;
-            padding: 28px;
-            margin-bottom: 22px;
+            padding: 20px;
+            margin-bottom: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             border-left: 5px solid var(--forstgruen);
             transition: opacity 0.4s ease, transform 0.4s ease;
@@ -157,6 +168,8 @@
             opacity: 0;
             transform: translateX(50px);
             pointer-events: none;
+            display: flex;
+            flex-direction: column;
         }
 
         .question-card.active {
@@ -178,34 +191,38 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             background: var(--forstgruen);
             color: white;
             border-radius: 50%;
             font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 15px;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            flex-shrink: 0;
         }
 
+        /* GRÖSSERE SCHRIFT IN DEN QUIZBOXEN */
         .question-text {
-            font-size: 1.12rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--dunkel);
-            margin-bottom: 18px;
-            line-height: 1.5;
+            margin-bottom: 14px;
+            line-height: 1.4;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
+            flex: 1;
+            overflow-y: auto;
         }
 
         .option {
             display: flex;
             align-items: center;
-            padding: 14px 18px;
+            padding: 14px 16px;
             background: var(--creme);
             border: 2px solid var(--hellgrau);
             border-radius: 12px;
@@ -260,8 +277,8 @@
         }
 
         .radio-circle {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             border: 2px solid var(--grau);
             border-radius: 50%;
             margin-right: 14px;
@@ -315,23 +332,25 @@
             border-radius: 50%;
         }
 
+        /* GRÖSSERE OPTION-TEXT */
         .option-text {
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             color: var(--dunkel);
             line-height: 1.4;
             padding-right: 30px;
         }
 
         .explanation {
-            margin-top: 15px;
-            padding: 15px 18px;
+            margin-top: 12px;
+            padding: 12px 16px;
             background: linear-gradient(135deg, rgba(45, 106, 79, 0.08), rgba(149, 213, 178, 0.15));
             border-radius: 10px;
             border-left: 4px solid var(--forstgruen);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--forstgruen-dunkel);
-            line-height: 1.6;
+            line-height: 1.5;
             display: none;
+            flex-shrink: 0;
         }
 
         .explanation.show {
@@ -346,8 +365,9 @@
 
         .next-btn-container {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 12px;
             display: none;
+            flex-shrink: 0;
         }
 
         .next-btn-container.show {
@@ -360,7 +380,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 14px 32px;
+            padding: 12px 28px;
             border: none;
             border-radius: 12px;
             font-family: 'DM Sans', sans-serif;
@@ -387,7 +407,8 @@
         .result-section {
             display: none;
             text-align: center;
-            padding: 30px 20px;
+            padding: 20px;
+            flex: 1;
         }
 
         .result-section.show {
@@ -403,7 +424,7 @@
         .result-card {
             background: white;
             border-radius: 20px;
-            padding: 40px 30px;
+            padding: 30px 24px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             max-width: 500px;
             margin: 0 auto;
@@ -420,9 +441,9 @@
         }
 
         .result-edda {
-            width: 180px;
+            width: 140px;
             height: auto;
-            margin: 0 auto 15px;
+            margin: 0 auto 12px;
             animation: eddaCelebrate 1s ease-in-out infinite;
         }
 
@@ -435,28 +456,28 @@
 
         .result-title {
             font-family: 'DM Serif Display', serif;
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: var(--forstgruen-dunkel);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .result-score {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 700;
             color: var(--forstgruen);
-            margin: 15px 0;
+            margin: 10px 0;
         }
 
         .result-score span {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--grau);
             font-weight: 400;
         }
 
         .result-message {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--grau);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             line-height: 1.5;
         }
 
@@ -464,7 +485,7 @@
             background: var(--hellgrau);
             height: 12px;
             border-radius: 6px;
-            margin: 20px 0;
+            margin: 15px 0;
             overflow: hidden;
         }
 
@@ -476,16 +497,17 @@
         }
 
         .stars {
-            font-size: 2rem;
-            margin: 15px 0;
+            font-size: 1.8rem;
+            margin: 10px 0;
             letter-spacing: 5px;
         }
 
         .footer {
             text-align: center;
-            padding: 30px 20px;
+            padding: 15px 10px;
             color: var(--grau);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            flex-shrink: 0;
         }
 
         .footer a {
@@ -515,42 +537,39 @@
 
         /* ==================== MOBILE OPTIMIERUNGEN ==================== */
         @media (max-width: 600px) {
-            .container { padding: 10px; }
+            .container { padding: 8px; }
 
-            .header { padding: 10px 10px 15px; }
-            .header h1 { font-size: 1.4rem; }
-            .header .subtitle { font-size: 0.9rem; }
-            .header .target-group { font-size: 0.7rem; padding: 4px 12px; }
+            .header { padding: 0 0 6px 0; }
+            .header h1 { font-size: 1.2rem; }
+            .header .subtitle { font-size: 0.8rem; }
+            .header .target-group { font-size: 0.65rem; padding: 2px 10px; margin-top: 4px; }
 
-            /* Edda kleiner auf Mobile */
-            .edda-img { width: 90px; max-height: 110px; }
-            .edda-container { margin: 8px 0; }
+            .edda-img { width: 40px; max-height: 50px; }
+            .edda-container { margin: 2px 0; }
 
-            .progress-container { margin: 10px 0; height: 6px; }
-            .progress-text { font-size: 0.75rem; margin: 3px 0 8px 0; }
+            .progress-container { margin: 4px 0; height: 5px; }
+            .progress-text { font-size: 0.7rem; margin: 2px 0 4px 0; }
 
-            /* Frage-Karte kompakter */
-            .question-card { padding: 16px; border-radius: 12px; }
-            .question-number { width: 28px; height: 28px; font-size: 0.85rem; margin-bottom: 10px; }
-            .question-text { font-size: 0.95rem; margin-bottom: 12px; }
+            .question-card { padding: 14px; border-radius: 12px; margin-bottom: 8px; }
+            .question-number { width: 28px; height: 28px; font-size: 0.85rem; margin-bottom: 8px; }
+            .question-text { font-size: 1.1rem; margin-bottom: 10px; }
 
-            /* Optionen kompakter */
             .options { gap: 6px; }
             .option { padding: 10px 12px; border-radius: 10px; }
-            .option-text { font-size: 0.85rem; }
-            .radio-circle { width: 18px; height: 18px; margin-right: 10px; }
+            .option-text { font-size: 0.95rem; }
+            .radio-circle { width: 20px; height: 20px; margin-right: 10px; }
 
-            .explanation { padding: 10px 12px; font-size: 0.8rem; margin-top: 10px; }
+            .explanation { padding: 10px 12px; font-size: 0.85rem; margin-top: 8px; }
 
             .btn { padding: 10px 24px; font-size: 0.9rem; }
 
-            .result-card { padding: 24px 20px; }
-            .result-title { font-size: 1.5rem; }
-            .result-score { font-size: 2.5rem; }
-            .result-edda { width: 120px; }
-            .result-message { font-size: 0.95rem; }
+            .result-card { padding: 20px 16px; }
+            .result-title { font-size: 1.4rem; }
+            .result-score { font-size: 2.2rem; }
+            .result-edda { width: 100px; }
+            .result-message { font-size: 0.9rem; }
 
-            .footer { padding: 20px 10px; font-size: 0.75rem; }
+            .footer { padding: 12px 8px; font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -847,15 +866,15 @@
                     <div class="result-bar" id="resultBar"></div>
                 </div>
                 <p class="result-message" id="resultMessage"></p>
-                <div style="margin-top: 25px;">
+                <div style="margin-top: 20px;">
                     <button class="btn btn-primary" onclick="restartQuiz()">🔄 Quiz wiederholen</button>
                 </div>
             </div>
         </div>
 
         <footer class="footer">
-            <img src="https://www.wald-mv.de/static/WALDMV/Dateien/Bilder/logo-landesforst-mv-.svg" alt="Logo" width="180">
-            <p style="margin-top: 15px;">
+            <img src="https://www.wald-mv.de/static/WALDMV/Dateien/Bilder/logo-landesforst-mv-.svg" alt="Logo" width="140">
+            <p style="margin-top: 10px;">
                 <a href="https://www.wald-mv.de" target="_blank">www.wald-mv.de</a>
             </p>
         </footer>
